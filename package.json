@@ -1,0 +1,20 @@
+{
+  "name": "local-agent-js",
+  "version": "0.1.0",
+  "description": "Tiny local JavaScript agent harness for OpenAI-compatible local models such as Qwen via llama.cpp.",
+  "type": "module",
+  "bin": {
+    "local-agent-js": "bin/local-agent-js.js",
+    "lajs": "bin/local-agent-js.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "node bin/local-agent-js.js --repl"
+  },
+  "keywords": ["agent", "llama.cpp", "qwen", "local-llm", "openai-compatible"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": ["bin", "src", "README.md"]
+}

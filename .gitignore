@@ -1,0 +1,6 @@
+node_modules/
+*.log
+.local-agent-transcripts/
+.qwen-agent-jobs/
+coverage/
+.DS_Store
