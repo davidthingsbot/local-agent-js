@@ -12,17 +12,19 @@ Keep this package suitable for publishing or linking as an npm CLI/module. Prefe
 - CLI entry: `bin/local-agent-js.js`
 - Main module: `src/agent.js`
 - Local launcher: `./la.sh`
-- Default model endpoint: `http://127.0.0.1:19434/v1`
+- Default model endpoint: `http://127.0.0.1:19434/v1`; set `QWEN_BASE_URL=http://<model-host>:19434/v1` when running the JS agent on a different machine.
 
 ## Preferred model service
 
-Use the same preferred Qwen service as `local-agent-py`: one llama.cpp server across both RTX 3090s, configured as `--ctx-size 524288 -np 2`, yielding two simultaneous 256K-context slots.
+Use the same preferred Qwen service as `local-agent-py`: one llama.cpp server across both RTX 3090s, bound to `0.0.0.0:19434`, configured as `--ctx-size 524288 -np 2`, yielding two simultaneous 256K-context slots.
 
 Check it with:
 
 ```bash
 systemctl --user status local-agent-qwen.service
 curl -s http://127.0.0.1:19434/props | jq '.total_slots, .default_generation_settings.n_ctx'
+# remote client check:
+# curl -s http://<model-host>:19434/props | jq '.total_slots, .default_generation_settings.n_ctx'
 ```
 
 ## Development gates
