@@ -1,5 +1,5 @@
 [Unit]
-Description=Local Agent Qwen 2-slot 256K-per-session llama-server
+Description=Local Agent Qwen dual-RTX-3090 reference llama-server
 After=network-online.target
 Wants=network-online.target
 

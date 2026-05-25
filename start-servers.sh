@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Start llama-server for local-agent-py.
+# Reference llama-server launcher for the dual RTX 3090 profile documented in
+# docs/hardware-profiles.md.
 #
 # Default mode: one dual-slot Qwen server spread across all NVIDIA GPUs.
 # It exposes two simultaneous 256K-context slots by using --ctx-size 524288 -np 2.

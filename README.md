@@ -2,9 +2,38 @@
 
 JavaScript/Node translation of `local-agent-py`: a tiny local agent harness for OpenAI-compatible local models such as Qwen via llama.cpp.
 
-Default target: a Qwen server at `http://127.0.0.1:19434/v1`. On David's model host, llama.cpp now binds to `0.0.0.0:19434` so other machines can connect. The preferred server is one dual-slot llama.cpp process across both RTX 3090s: `--ctx-size 524288 -np 2`, reported as two simultaneous `n_ctx=262144` slots.
+This repo now separates:
 
-## Run
+- **general agent/runtime documentation** from
+- **hardware-specific tuning profiles**
+
+That keeps the core docs useful on any machine while still preserving tested launch examples for particular hardware.
+
+## What this project does
+
+`local-agent-js` is a lightweight local agent CLI and module for running tool-using agent loops against a local OpenAI-compatible endpoint.
+
+Core capabilities:
+
+- OpenAI-compatible chat-completions loop using Node's built-in `fetch`
+- Tool calling: `list_dir`, `read_file`, `write_file`, `run_shell`
+- Subagents: blocking and background child agent jobs
+- Safe write sandbox with optional `--write-dir`
+- Transcript persistence and REPL resume
+- Compaction summaries with pinned original request/open outputs
+- Empty-response watchdog with four retries
+- REPL commands: `/jobs`, `/clear-jobs`, `/context`, `/compact`, `/dirs`, `/capabilities`, `/reset`
+
+## Runtime
+
+- Node 20+ required
+- Node 22 is the current development baseline on David's machine
+- CLI entry: `bin/local-agent-js.js`
+- Main module: `src/agent.js`
+- Convenience launcher: `./la.sh`
+- Default model endpoint: `http://127.0.0.1:19434/v1`
+
+## Quick start
 
 ```bash
 cd ~/work/local-agent-js
@@ -26,16 +55,9 @@ local-agent-js --capabilities
 lajs --cwd ~/work/la-test "list files and write a short report"
 ```
 
-
 ## Running from another machine
 
-The model host now binds llama.cpp to all interfaces:
-
-```bash
---host 0.0.0.0 --port 19434
-```
-
-From another machine, point the JS agent at the model host:
+Point the JS agent at the remote model host:
 
 ```bash
 QWEN_BASE_URL=http://<model-host-ip-or-tailnet-name>:19434/v1 ./la.sh
@@ -46,20 +68,57 @@ QWEN_BASE_URL=http://<model-host-ip-or-tailnet-name>:19434/v1 \
 
 Use Tailscale or a trusted LAN/VPN. The llama.cpp endpoint has no real auth by default, so do **not** expose port `19434` directly to the public internet.
 
-## What is ported
+## Documentation map
 
-- OpenAI-compatible chat-completions loop using Node's built-in `fetch`
-- Tool calling: `list_dir`, `read_file`, `write_file`, `run_shell`
-- Subagents: blocking and background child agent jobs
-- Safe write sandbox with optional `--write-dir`
-- Transcript persistence and REPL resume
-- Compaction summaries with pinned original request/open outputs
-- Empty-response watchdog with four retries
-- `/jobs`, `/clear-jobs`, `/context`, `/compact`, `/dirs`, `/capabilities`, `/reset`
-- Same local Qwen startup script/service template as the Python repo
+### General docs
+
+- `README.md` — project overview, features, runtime, and usage
+- `AGENTS.md` — contributor/agent guidance for working in this repo
+
+### Hardware-specific docs
+
+- `docs/hardware-profiles.md` — machine-specific tuning guidance and tested launch profiles
+
+### Reference launch artifacts
+
+These are examples tied to specific tested hardware profiles, not universal defaults:
+
+- dual-3090:
+  - `start-servers.sh`
+  - `systemd/local-agent-qwen.service`
+- AMD 890M 128K:
+  - `start-server-amd-128k.sh`
+  - `systemd/local-agent-qwen-amd-128k.service`
+
+## Hardware tuning approach
+
+When tuning `local-agent-js` for a new machine, keep the tuning dimensions separate from the agent features themselves.
+
+Typical tuning axes:
+
+- **Model family and quant**: Q4/Q5/Q6/Q8 or other GGUF variants
+- **Context vs concurrency**: larger `--ctx-size` and fewer slots vs smaller contexts and more slots
+- **Backend**: CUDA, ROCm, Vulkan, CPU, or mixed offload
+- **Text-only vs multimodal**: whether to load projector files / vision support
+- **Latency vs throughput**: interactive single-user feel vs multiple concurrent agent jobs
+
+The workflow should be:
+
+1. Start from a clean hardware profile for the machine.
+2. Benchmark a small matrix of model/quant/context/parallel choices.
+3. Keep the best-performing launch command in the hardware-profile docs.
+4. Only then promote a tested command into helper scripts or systemd examples.
+
+## Current hardware reference
+
+The repo currently includes a **dual RTX 3090 reference profile**. See:
+
+- `docs/hardware-profiles.md`
+- `start-servers.sh`
+- `systemd/local-agent-qwen.service`
+
+Those files document and exemplify one tested configuration family; they should not be read as the only intended deployment shape for this project.
 
 ## Notes
 
-This is intentionally dependency-light: no runtime npm dependencies. Node 20+ is required for built-in `fetch` and `AbortSignal.timeout`; Node 22 is what this machine is running.
-
-The Python repo remains the more battle-tested version for now. This JS repo is the npm-module starting point.
+This project is intentionally dependency-light: no runtime npm dependencies. The Python repo remains the more battle-tested version for now; this JS repo is the npm-module starting point.

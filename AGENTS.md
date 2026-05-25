@@ -12,24 +12,49 @@ Keep this package suitable for publishing or linking as an npm CLI/module. Prefe
 - CLI entry: `bin/local-agent-js.js`
 - Main module: `src/agent.js`
 - Local launcher: `./la.sh`
-- Default model endpoint: `http://127.0.0.1:19434/v1`; set `QWEN_BASE_URL=http://<model-host>:19434/v1` when running the JS agent on a different machine.
+- Default model endpoint: `http://127.0.0.1:19434/v1`
+- Remote model endpoint override: `QWEN_BASE_URL=http://<model-host>:19434/v1`
 
-## Preferred model service
+## Documentation policy
 
-Use the same preferred Qwen service as `local-agent-py`: one llama.cpp server across both RTX 3090s, bound to `0.0.0.0:19434`, configured as `--ctx-size 524288 -np 2`, yielding two simultaneous 256K-context slots.
+Keep documentation split into two layers:
 
-Check it with:
+1. **General docs** — agent features, runtime behavior, CLI usage, safety notes, and tuning methodology that applies across machines.
+2. **Hardware-profile docs** — commands, models, slot counts, context sizes, backends, and systemd/service examples that are tied to a particular machine or GPU layout.
 
-```bash
-systemctl --user status local-agent-qwen.service
-curl -s http://127.0.0.1:19434/props | jq '.total_slots, .default_generation_settings.n_ctx'
-# remote client check:
-# curl -s http://<model-host>:19434/props | jq '.total_slots, .default_generation_settings.n_ctx'
-```
+Do **not** present one machine's launch command as the universal preferred default unless the docs explicitly say it is hardware-specific.
 
-## Development gates
+Current layout:
 
-Before claiming changes are good, run:
+- `README.md` — general project overview and usage
+- `docs/hardware-profiles.md` — tested hardware-specific tuning notes
+- `start-servers.sh` — dual-3090 reference launch script
+- `systemd/local-agent-qwen.service` — dual-3090 reference systemd unit
+- `start-server-amd-128k.sh` — AMD 890M 128K reference launch script
+- `systemd/local-agent-qwen-amd-128k.service` — AMD 890M 128K reference systemd unit
+
+## Current reference hardware profile
+
+The existing launch script and systemd unit are for a **dual RTX 3090 reference setup**. Treat them as examples of one tested configuration family, not as a promise that every machine should use the same flags.
+
+If you add support for another machine, document it as a separate hardware section instead of overwriting the reference story.
+
+## Tuning expectations
+
+When improving model performance on a machine, capture:
+
+- model and quant used
+- backend used (CUDA, ROCm, Vulkan, CPU, mixed)
+- context size and slot count
+- whether the server is text-only or multimodal
+- why the chosen config beats nearby alternatives
+- the exact validation commands used
+
+Prefer measured claims over assumptions.
+
+## Validation / development gates
+
+Before claiming code changes are good, run:
 
 ```bash
 npm test

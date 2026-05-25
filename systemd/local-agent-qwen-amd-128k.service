@@ -1,0 +1,14 @@
+[Unit]
+Description=Local Agent Qwen AMD 890M 128K reference llama-server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/llama-server -m /home/david/models/Qwen3.5-35B-A3B-Q4_K_M.gguf --host 0.0.0.0 --port 19434 -ngl 999 -c 131072 -np 1
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

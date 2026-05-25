@@ -1,5 +1,23 @@
 # HISTORY.md — local-agent-js
 
+## 2026-05-26 — Split general docs from hardware-specific tuning docs
+
+Reorganized the documentation so the repo no longer implies that the dual-3090 setup is the universal preferred deployment.
+
+Changes:
+
+- `README.md` now focuses on general project features, runtime, usage, and tuning methodology.
+- Added `docs/hardware-profiles.md` for machine-specific llama.cpp launch guidance.
+- `AGENTS.md` now instructs contributors to keep general docs separate from hardware-profile docs.
+- `start-servers.sh` is labeled as a dual-3090 reference launcher.
+- `systemd/local-agent-qwen.service` is labeled as a dual-3090 reference unit.
+
+Intent:
+
+- preserve the tested dual-3090 setup
+- make room for future machine-specific tuning sections
+- avoid carrying old hardware assumptions into new tuning work
+
 ## 2026-05-24 — Initial JavaScript translation
 
 David asked for a sibling directory to `local-agent-py` with the suffix `js` instead of `py`, translated into JavaScript so it can become an npm module.
