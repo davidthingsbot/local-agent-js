@@ -109,15 +109,20 @@ The workflow should be:
 3. Keep the best-performing launch command in the hardware-profile docs.
 4. Only then promote a tested command into helper scripts or systemd examples.
 
-## Current hardware reference
+## Current hardware references
 
-The repo currently includes a **dual RTX 3090 reference profile**. See:
+The repo currently includes two documented hardware-profile families:
 
-- `docs/hardware-profiles.md`
-- `start-servers.sh`
-- `systemd/local-agent-qwen.service`
+- **dual RTX 3090 reference profile**
+  - `docs/hardware-profiles.md`
+  - `start-servers.sh`
+  - `systemd/local-agent-qwen.service`
+- **AMD 890M 128K validated profile**
+  - `docs/hardware-profiles.md`
+  - `start-server-amd-128k.sh`
+  - `systemd/local-agent-qwen-amd-128k.service`
 
-Those files document and exemplify one tested configuration family; they should not be read as the only intended deployment shape for this project.
+These files document tested configuration families; they should not be read as the only intended deployment shapes for this project.
 
 ## Notes
 

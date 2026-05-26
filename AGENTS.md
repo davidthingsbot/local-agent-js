@@ -33,9 +33,14 @@ Current layout:
 - `start-server-amd-128k.sh` — AMD 890M 128K reference launch script
 - `systemd/local-agent-qwen-amd-128k.service` — AMD 890M 128K reference systemd unit
 
-## Current reference hardware profile
+## Current reference hardware profiles
 
-The existing launch script and systemd unit are for a **dual RTX 3090 reference setup**. Treat them as examples of one tested configuration family, not as a promise that every machine should use the same flags.
+The repo currently preserves multiple tested hardware-profile families.
+
+- **dual RTX 3090 reference setup** — historical multi-GPU long-context reference
+- **AMD 890M 128K setup** — validated single-slot large-context reference for this machine
+
+Treat these as examples of tested configuration families, not as a promise that every machine should use the same flags.
 
 If you add support for another machine, document it as a separate hardware section instead of overwriting the reference story.
 
