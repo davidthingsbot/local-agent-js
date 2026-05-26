@@ -425,6 +425,23 @@ Best current framing:
 - launcher: `start-server-amd-128k.sh`
 - systemd unit: `systemd/local-agent-qwen-amd-128k.service`
 
+### Security hardening for the active AMD 128K service
+
+The live boot-time service on this machine was further hardened by enabling llama.cpp's built-in API-key authentication.
+
+Active shape:
+
+- service: `~/.config/systemd/user/llama-server.service`
+- auth mode: `--api-key-file /home/david/.config/llama-server/api-keys.txt`
+- client auth header: `Authorization: Bearer <key>`
+
+Operational notes:
+
+- unauthenticated requests should return `401`
+- authenticated requests with a configured key should succeed
+- generated client keys were written to `/tmp/llama-server-api-keys.txt` for retrieval during setup
+- the persistent server-side key file lives outside the repo so secrets are not committed
+
 Before adopting any of these as the main service, the next validation should be a realistic long agent task rather than only short probes, because the machine is operating close to memory limits at these larger context sizes.
 
 ### Long agent-task validation on the preferred 128K shape

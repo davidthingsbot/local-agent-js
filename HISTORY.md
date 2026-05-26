@@ -1,5 +1,15 @@
 # HISTORY.md — local-agent-js
 
+## 2026-05-26 — Document API-key secured AMD 128K service
+
+Documented the built-in llama.cpp API-key security setup used by the active AMD 890M 128K service.
+
+Changes:
+
+- `README.md` now mentions llama.cpp's `--api-key` / `--api-key-file` options in the remote-access security guidance.
+- `docs/hardware-profiles.md` now records the active secured service shape for the AMD 128K profile.
+- notes now clarify that generated client keys were delivered via `/tmp/llama-server-api-keys.txt` while the persistent server-side key file stays outside the repo.
+
 ## 2026-05-26 — Split general docs from hardware-specific tuning docs
 
 Reorganized the documentation so the repo no longer implies that the dual-3090 setup is the universal preferred deployment.

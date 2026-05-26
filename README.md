@@ -66,7 +66,14 @@ QWEN_BASE_URL=http://<model-host-ip-or-tailnet-name>:19434/v1 \
   node ./bin/local-agent-js.js --cwd ~/work/la-test "your task"
 ```
 
-Use Tailscale or a trusted LAN/VPN. The llama.cpp endpoint has no real auth by default, so do **not** expose port `19434` directly to the public internet.
+Use Tailscale or a trusted LAN/VPN. The llama.cpp endpoint has no meaningful protection unless you enable its built-in API-key support, so do **not** expose port `19434` directly to the public internet.
+
+For secured deployments, this repo now uses llama.cpp's built-in authentication options:
+
+- `--api-key KEY`
+- `--api-key-file FNAME`
+
+On the current AMD 890M setup, the boot-time service is configured with `--api-key-file` so requests must present `Authorization: Bearer <key>`.
 
 ## Documentation map
 
